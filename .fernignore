@@ -1,0 +1,2 @@
+# Custom SDK helpers — preserved across Fern regeneration.
+.github/workflows/publish-homebrew.yml
