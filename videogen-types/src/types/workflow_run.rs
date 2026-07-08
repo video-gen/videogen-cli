@@ -20,7 +20,7 @@ pub struct WorkflowRun {
     #[serde(rename = "attemptIndex")]
     #[serde(default)]
     pub attempt_index: i64,
-    /// Id of the project created for this workflow run.
+    /// Id of the project created for this workflow run (e.g. `vg_proj_...`).
     #[serde(rename = "projectId")]
     #[serde(default)]
     pub project_id: String,

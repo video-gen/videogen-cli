@@ -222,7 +222,7 @@ Returns the current status of a project export started via `POST /v1/projects/{p
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--project-id` | `string` | Yes | The project id (e.g. `vg_proj_...`). |
-| `--export-id` | `string` | Yes | The export id returned by `POST /v1/projects/{projectId}/export`. |
+| `--export-id` | `string` | Yes | The export id (e.g. `vg_expo_...`) returned by `POST /v1/projects/{projectId}/export`. |
 
 #### `videogen projects list-project-remix-actions`
 
@@ -484,7 +484,7 @@ Remove a webhook endpoint. It will stop receiving events immediately.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--endpoint-id` | `string` | Yes | The webhook endpoint id returned by `POST /v1/webhooks/endpoints`. |
+| `--endpoint-id` | `string` | Yes | The webhook endpoint id (e.g. `ep_...`) returned by `POST /v1/webhooks/endpoints`. |
 
 #### `videogen webhooks list-webhook-endpoints`
 

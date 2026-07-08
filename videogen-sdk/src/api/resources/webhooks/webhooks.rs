@@ -72,7 +72,7 @@ impl WebhooksClient {
     ///
     /// # Arguments
     ///
-    /// * `endpoint_id` - The webhook endpoint id returned by `POST /v1/webhooks/endpoints`.
+    /// * `endpoint_id` - The webhook endpoint id (e.g. `ep_...`) returned by `POST /v1/webhooks/endpoints`.
     /// * `options` - Additional request options such as headers, timeout, etc.
     ///
     /// # Returns

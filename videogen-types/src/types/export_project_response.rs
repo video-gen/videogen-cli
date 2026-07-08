@@ -4,7 +4,7 @@ use super::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct ExportProjectResponse {
-    /// Opaque export id. Poll `GET /v1/projects/{projectId}/exports/{exportId}` or subscribe to webhooks for completion.
+    /// Opaque export id (e.g. `vg_expo_...`). Poll `GET /v1/projects/{projectId}/exports/{exportId}` or subscribe to webhooks for completion.
     #[serde(rename = "exportId")]
     #[serde(default)]
     pub export_id: String,

@@ -10,7 +10,7 @@ pub struct RemixActionRun {
     pub remix_action_id: String,
     pub r#type: RemixActionType,
     pub status: RemixActionStatus,
-    /// Id of the project this remix action edits.
+    /// Id of the project this remix action edits (e.g. `vg_proj_...`).
     #[serde(rename = "projectId")]
     #[serde(default)]
     pub project_id: String,

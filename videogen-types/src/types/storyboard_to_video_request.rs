@@ -2,7 +2,7 @@ pub use crate::prelude::*;
 #[allow(unused_imports)]
 use super::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct StoryboardToVideoRequest {
     /// Ordered list of scenes. Each scene becomes one section in the final video, in this order.
     #[serde(default)]
@@ -25,6 +25,10 @@ pub struct StoryboardToVideoRequest {
     #[serde(rename = "workflowAgentContext")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub workflow_agent_context: Option<String>,
+    /// Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. `ENABLE_CAPTIONS` shows and styles captions, `SET_BACKGROUND_MUSIC` sets a music track, `ADD_TRANSITIONS` stamps transitions between scenes, and `SET_LOGO` overlays a logo. `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+    #[serde(rename = "remixActions")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub remix_actions: Option<Vec<RemixAction>>,
 }
 
 impl StoryboardToVideoRequest {
@@ -42,6 +46,7 @@ pub struct StoryboardToVideoRequestBuilder {
     quality: Option<StoryboardToVideoRequestQuality>,
     aspect_ratio: Option<AspectRatio>,
     workflow_agent_context: Option<String>,
+    remix_actions: Option<Vec<RemixAction>>,
 }
 
 impl StoryboardToVideoRequestBuilder {
@@ -75,6 +80,11 @@ impl StoryboardToVideoRequestBuilder {
         self
     }
 
+    pub fn remix_actions(mut self, value: Vec<RemixAction>) -> Self {
+        self.remix_actions = Some(value);
+        self
+    }
+
     /// Consumes the builder and constructs a [`StoryboardToVideoRequest`].
     /// This method will fail if any of the following fields are not set:
     /// - [`scenes`](StoryboardToVideoRequestBuilder::scenes)
@@ -86,6 +96,7 @@ impl StoryboardToVideoRequestBuilder {
             quality: self.quality,
             aspect_ratio: self.aspect_ratio,
             workflow_agent_context: self.workflow_agent_context,
+            remix_actions: self.remix_actions,
         })
     }
 }

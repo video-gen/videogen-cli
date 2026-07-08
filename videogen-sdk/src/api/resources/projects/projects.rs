@@ -105,7 +105,7 @@ impl ProjectsClient {
     /// # Arguments
     ///
     /// * `project_id` - The project id (e.g. `vg_proj_...`).
-    /// * `export_id` - The export id returned by `POST /v1/projects/{projectId}/export`.
+    /// * `export_id` - The export id (e.g. `vg_expo_...`) returned by `POST /v1/projects/{projectId}/export`.
     /// * `options` - Additional request options such as headers, timeout, etc.
     ///
     /// # Returns

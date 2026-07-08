@@ -5,6 +5,7 @@ use super::*;
 /// Simplified project metadata.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub struct ProjectResponse {
+    /// Opaque project id (e.g. `vg_proj_...`).
     #[serde(rename = "projectId")]
     #[serde(default)]
     pub project_id: String,

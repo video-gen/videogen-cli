@@ -17,7 +17,7 @@ pub struct WorkflowRunWebhookPayload {
     pub occurred_at: DateTime<FixedOffset>,
     #[serde(rename = "workflowType")]
     pub workflow_type: WorkflowType,
-    /// Id of the project created for this workflow run.
+    /// Id of the project created for this workflow run (e.g. `vg_proj_...`).
     #[serde(rename = "projectId")]
     #[serde(default)]
     pub project_id: String,

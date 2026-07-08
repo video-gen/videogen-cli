@@ -5,7 +5,7 @@ use super::*;
 /// Returned when remix actions are accepted. Poll `GET /v1/projects/{projectId}/remix-actions` for status.
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
 pub struct RemixProjectResponse {
-    /// Id of the edited project (the duplicate when `saveAsNewProject` was true).
+    /// Id of the edited project (e.g. `vg_proj_...`; the duplicate when `saveAsNewProject` was true).
     #[serde(rename = "projectId")]
     #[serde(default)]
     pub project_id: String,

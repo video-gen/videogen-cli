@@ -4,6 +4,7 @@ use super::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct WebhookEndpoint {
+    /// Webhook endpoint id (e.g. `ep_...`).
     #[serde(rename = "endpointId")]
     #[serde(default)]
     pub endpoint_id: String,

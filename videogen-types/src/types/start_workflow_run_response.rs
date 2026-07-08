@@ -9,7 +9,7 @@ pub struct StartWorkflowRunResponse {
     #[serde(rename = "workflowRunId")]
     #[serde(default)]
     pub workflow_run_id: String,
-    /// Id of the project created for this workflow run.
+    /// Id of the project created for this workflow run (e.g. `vg_proj_...`).
     #[serde(rename = "projectId")]
     #[serde(default)]
     pub project_id: String,

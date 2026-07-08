@@ -4,11 +4,11 @@ use super::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct ProjectExport {
-    /// Opaque export id matching the original request.
+    /// Opaque export id (e.g. `vg_expo_...`) matching the original request.
     #[serde(rename = "exportId")]
     #[serde(default)]
     pub export_id: String,
-    /// Id of the exported project.
+    /// Id of the exported project (e.g. `vg_proj_...`).
     #[serde(rename = "projectId")]
     #[serde(default)]
     pub project_id: String,
