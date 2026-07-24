@@ -1,130 +1,44 @@
-# VideoGen API CLI
+# `@videogen/cli`
 
-Command-line interface for the VideoGen API.
+Command-line interface for the [VideoGen API](https://docs.videogen.io). Built on [`@videogen/sdk`](https://www.npmjs.com/package/@videogen/sdk).
 
-## Table of contents
-
-- [Installation](#installation)
-- [Authentication](#authentication)
-- [Quick start](#quick-start)
-- [Usage](#usage)
-- [Documentation](#documentation)
-- [Advanced](#advanced)
-  - [Common flags](#common-flags)
-  - [Environment variables](#environment-variables)
-  - [Output formats](#output-formats)
-  - [Shell completion](#shell-completion)
-
-## Installation
-
-### Shell (macOS / Linux)
+## Install
 
 ```bash
-curl --proto '=https' --tlsv1.2 -LsSf https://github.com/video-gen/videogen-cli/releases/latest/download/videogen-installer.sh | sh
+npm install -g @videogen/cli
+# or build from a clone (installs @videogen/sdk from npm):
+npm install && npm run build
 ```
 
-### PowerShell (Windows)
+## Auth
 
-```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://github.com/video-gen/videogen-cli/releases/latest/download/videogen-installer.ps1 | iex"
-```
-
-### Build from source
-
-If you prefer to build from source, install the [Rust toolchain](https://rustup.rs/) and run:
-
-```bash
-cargo build --release
-./target/release/videogen --help
-```
-
-## Authentication
-
-Set the following environment variable(s) before using the CLI:
-
-```bash
-export VIDEOGEN_TOKEN="<your token>"
-```
-
-A `.env` file in the working directory is also supported — the CLI auto-loads it on startup.
-
-## Quick start
-
-List available commands:
-
-```bash
-videogen --help
-```
-
-Call an API endpoint:
-
-```bash
-videogen <resource> <method>
-```
-
-Run `videogen <resource> --help` to see available methods for a resource.
+Set `VIDEOGEN_API_KEY`, or pass `--api-key`. Optional `VIDEOGEN_BASE_URL` / `--base-url` (default `https://api.videogen.io`).
 
 ## Usage
 
-Every API resource appears as a subcommand (e.g. `videogen <resource> <method>`). Run `videogen <resource> --help` to see available methods.
-
-Provide request parameters as flags or as JSON:
-
 ```bash
-videogen <resource> <method> --json '{"key": "value"}'
+videogen account get-me
+
+videogen workflows script-to-video --body '{"script":"...","visualStyle":{"type":"AI_IMAGE","aiStyle":"watercolor"},"quality":"HIGH","remixActions":[{"type":"ENABLE_CAPTIONS"},{"type":"CONVERT_IMAGES_TO_VIDEOS","motionPrompt":"slow cinematic push-in","muteOutputVideos":true,"quality":"HIGH"}]}' --wait
+
+videogen workflows get-workflow-run --workflow-run-id vg_work_...
+
+videogen tools generate-image --body '{"prompt":"a cat"}' --wait
+
+videogen files upload ./clip.mp4 --type video/mp4
 ```
 
-## Documentation
+- Body POSTs: `--body '<json>'`, `--body @file.json`, or pipe JSON on stdin.
+- Path/query params: kebab flags (e.g. `--project-id`, `--limit`, `--self-only`).
+- `--wait` on tools/workflows (and project export/remix) calls the SDK `*AndWait` helpers.
+- Output is JSON on stdout by default.
 
-See [reference.md](./reference.md) for the full command reference.
+## Develop
 
-## Advanced
-
-### Common flags
-
-These flags are available on every operation:
-
-| Flag | Description |
-|------|-------------|
-| `--dry-run` | Validate the request locally and print the HTTP request without sending it |
-| `--json <JSON\|->` | Supply a request body as JSON (or `-` to read stdin) |
-| `--params <JSON>` | Merge extra parameters as JSON (overrides individual flags) |
-| `--format <json\|table\|yaml\|csv>` | Output format (default `json`) |
-| `--output <PATH>` | Write binary responses to a file |
-| `--base-url <URL>` | Override the API base URL |
-| `--page-all` | Auto-paginate and stream results as NDJSON |
-| `--page-limit <N>` | Max pages to fetch when auto-paginating (default `10`) |
-| `-q, --quiet` | Suppress stdout output on success (errors still go to stderr) |
-
-### Environment variables
-
-| Variable | Description |
-|----------|-------------|
-| `VIDEOGEN_BASE_URL` | Override the API base URL |
-| `VIDEOGEN_CA_BUNDLE` | Path to PEM file with extra trust roots (or `SSL_CERT_FILE`) |
-| `VIDEOGEN_INSECURE=1` | Skip TLS verification (debugging only) |
-| `VIDEOGEN_PROXY` | HTTP(S) proxy URL |
-| `VIDEOGEN_TIMEOUT_SECS` | Total request timeout in seconds |
-
-Standard environment variables (`HTTPS_PROXY` / `HTTP_PROXY` / `NO_PROXY` / `SSL_CERT_FILE`) are also honored.
-
-### Output formats
-
-Use the global `--format` flag to control output. Supported values: `json` (default), `table`, `yaml`, `csv`.
+`npm install` pulls `@videogen/sdk` from npm; no other setup is required.
 
 ```bash
-# Pipe JSON output through jq
-videogen <resource> <method> --format json | jq
-
-# Machine-readable catalog of every operation
-videogen --help --format json | jq 'length'
+npm install
+npm run build
+npm run typecheck
 ```
-
-### Shell completion
-
-Generate shell completion scripts:
-
-```bash
-videogen completion <bash|zsh|fish|powershell>
-```
-
