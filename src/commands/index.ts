@@ -1,5 +1,6 @@
 import { accountCommands } from "./account";
 import { assistantCommands } from "./assistant";
+import { entitiesCommands } from "./entities";
 import { filesCommands } from "./files";
 import { projectsCommands } from "./projects";
 import { resourcesCommands } from "./resources";
@@ -12,6 +13,7 @@ import { workflowsCommands } from "./workflows";
 export const RESOURCES: Record<string, ResourceCommands> = {
   account: accountCommands,
   assistant: assistantCommands,
+  entities: entitiesCommands,
   files: filesCommands,
   projects: projectsCommands,
   resources: resourcesCommands,

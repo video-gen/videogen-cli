@@ -42,7 +42,12 @@ export const projectsCommands: ResourceCommands = {
   // @sdk-operation listProjectExports
   "list-project-exports": async ({ client, args }) => {
     const projectId = requireStringFlag(args.flags, "projectId");
-    printJson(await client.projects.listProjectExports({ projectId }));
+    printJson(
+      await client.projects.listProjectExports({
+        projectId,
+        ...paginationFlags(args.flags),
+      }),
+    );
   },
 
   // @sdk-operation getProjectExport
@@ -93,6 +98,11 @@ export const projectsCommands: ResourceCommands = {
   // @sdk-operation listProjectRemixActions
   "list-project-remix-actions": async ({ client, args }) => {
     const projectId = requireStringFlag(args.flags, "projectId");
-    printJson(await client.projects.listProjectRemixActions({ projectId }));
+    printJson(
+      await client.projects.listProjectRemixActions({
+        projectId,
+        ...paginationFlags(args.flags),
+      }),
+    );
   },
 };

@@ -60,20 +60,6 @@ export const workflowsCommands: ResourceCommands = {
     );
   },
 
-  // @sdk-operation contentOutlineToVideo
-  "content-outline-to-video": async ({ client, args, wait }) => {
-    // We intentionally use an unsafe `as` assertion here because the API server validates the body and returns a type error if invalid.
-    const request = (await resolveRequest({
-      flags: args.flags,
-      requireBody: true,
-    })) as Parameters<typeof client.workflows.contentOutlineToVideo>[0];
-    printJson(
-      wait
-        ? await client.workflows.contentOutlineToVideoAndWait(request)
-        : await client.workflows.contentOutlineToVideo(request),
-    );
-  },
-
   // @sdk-operation listWorkflowRuns
   "list-workflow-runs": async ({ client, args }) => {
     printJson(
