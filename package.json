@@ -1,6 +1,6 @@
 {
   "name": "@videogen/cli",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Command-line interface for the VideoGen API.",
   "license": "MIT",
   "type": "module",
@@ -22,7 +22,7 @@
     "start": "node dist/cli.js"
   },
   "dependencies": {
-    "@videogen/sdk": "^2.0.5"
+    "@videogen/sdk": "^2.0.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",
