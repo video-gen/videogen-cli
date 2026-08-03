@@ -7,7 +7,18 @@ import type { ResourceCommands } from "./types";
 export const entitiesCommands: ResourceCommands = {
   // @sdk-operation listEntities
   "list-entities": async ({ client, args }) => {
-    const entityType = getStringFlag(args.flags, "entityType");
+    const entityTypeFlag = getStringFlag(args.flags, "entityType");
+    const entityType =
+      entityTypeFlag === "ACTOR" ||
+      entityTypeFlag === "PRODUCT" ||
+      entityTypeFlag === "VISUAL_STYLE"
+        ? entityTypeFlag
+        : undefined;
+    if (entityTypeFlag != null && entityType == null) {
+      throw new Error(
+        `Invalid --entity-type "${entityTypeFlag}". Expected ACTOR, PRODUCT, or VISUAL_STYLE.`,
+      );
+    }
     printJson(
       await client.entities.listEntities({
         ...paginationFlags(args.flags),
