@@ -20,15 +20,39 @@ Requires Node.js 20+.
 
 ## Auth
 
+Interactive sign-in (OAuth 2.1 authorization code + PKCE). Opens your browser, then caches tokens under `~/.videogen/cli/`:
+
+```bash
+videogen login
+```
+
+Sign out:
+
+```bash
+videogen logout
+```
+
+For scripts and CI, use an API key instead:
+
 ```bash
 export VIDEOGEN_API_KEY=sk_videogen_live_...
 ```
 
-Override per command with `--api-key`. Optional `VIDEOGEN_BASE_URL` / `--base-url` (default `https://api.videogen.io`).
+Override per command with `--api-key`. Credential order: `--api-key` → `VIDEOGEN_API_KEY` → cached OAuth token from `videogen login`. Optional `VIDEOGEN_BASE_URL` / `--base-url` (default `https://api.videogen.io`).
+
+Point at another environment at runtime (not build-time):
+
+```bash
+videogen login --base-url https://dev.api.videogen.io
+VIDEOGEN_BASE_URL=https://dev.api.videogen.io videogen account get-me
+```
+
+Optional `VIDEOGEN_CLI_CONFIG_DIR` overrides where tokens are stored (default `~/.videogen/cli/`).
 
 ## Quick start
 
 ```bash
+videogen login
 videogen account get-me
 ```
 
@@ -138,6 +162,8 @@ videogen tools generate-image --body '{"prompt":"a cat","quality":"HIGH"}'
 videogen tools get-tool-execution-info --tool-execution-id vg_tool_...
 ```
 
+For `generate-avatar`, the body requires `audioFileId` and `actorEntityId` (`vg_enti_...`). You may set `avatarQuality` to `LOW`, `STANDARD`, `HIGH`, or `MAX`. Script-to-video, voiceover-to-video, slideshow-to-video, and `CHANGE_NARRATOR` accept the same optional actor fields.
+
 ## Files
 
 Upload a local file (convenience wrapper around create → PUT → poll). `--type` is a VideoGen file type, not a MIME type:
@@ -242,7 +268,7 @@ List or delete:
 
 ```bash
 videogen webhooks list-webhook-endpoints
-videogen webhooks delete-webhook-endpoint --webhook-endpoint-id vg_wh_...
+videogen webhooks delete-webhook-endpoint --webhook-endpoint-id ep_...
 ```
 
 ## Common flags

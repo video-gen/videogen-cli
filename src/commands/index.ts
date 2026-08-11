@@ -1,5 +1,6 @@
 import { accountCommands } from "./account";
 import { assistantCommands } from "./assistant";
+import { authCommands } from "./auth";
 import { entitiesCommands } from "./entities";
 import { filesCommands } from "./files";
 import { projectsCommands } from "./projects";
@@ -13,6 +14,7 @@ import { workflowsCommands } from "./workflows";
 export const RESOURCES: Record<string, ResourceCommands> = {
   account: accountCommands,
   assistant: assistantCommands,
+  auth: authCommands,
   entities: entitiesCommands,
   files: filesCommands,
   projects: projectsCommands,
@@ -26,11 +28,16 @@ export const RESOURCES: Record<string, ResourceCommands> = {
 export const listUsage = (): string => {
   const lines: string[] = [
     "Usage: videogen [globals] <resource> <command> [flags]",
+    "       videogen login | videogen logout",
     "",
     "Globals:",
     "  --api-key <key>       API key (or VIDEOGEN_API_KEY)",
     "  --base-url <url>      API base URL (or VIDEOGEN_BASE_URL)",
     "  --json / --no-json    JSON stdout (default: on)",
+    "",
+    "Auth:",
+    "  login                 Sign in with VideoGen (OAuth 2.1 + PKCE)",
+    "  logout                Clear cached OAuth credentials",
     "",
     "Common flags:",
     "  --body '<json>'       JSON request body (or @file, or stdin)",
