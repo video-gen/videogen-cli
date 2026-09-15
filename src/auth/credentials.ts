@@ -21,6 +21,40 @@ export type StoredCredentials = {
 
 const trimTrailingSlash = (value: string): string => value.replace(/\/+$/, "");
 
+const APP_HOST_TO_API_BASE_URL: Record<string, string> = {
+  "app.videogen.io": "https://api.videogen.io",
+  "dev.app.videogen.io": "https://dev.api.videogen.io",
+  "dev.videogen.io": "https://dev.api.videogen.io",
+  "prerelease.app.videogen.io": "https://prerelease.api.videogen.io",
+  "prerelease.videogen.io": "https://prerelease.api.videogen.io",
+  "videogen.io": "https://api.videogen.io",
+  "www.videogen.io": "https://api.videogen.io",
+};
+
+const mapAppHostToApiBaseUrl = (raw: string): string => {
+  const withProtocol = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(raw) ? raw : `https://${raw}`;
+
+  let parsed: URL;
+  try {
+    parsed = new URL(withProtocol);
+  } catch {
+    return trimTrailingSlash(raw);
+  }
+
+  const mapped = APP_HOST_TO_API_BASE_URL[parsed.hostname];
+  if (mapped != null) {
+    return mapped;
+  }
+
+  return trimTrailingSlash(raw);
+};
+
+export const resolveApiBaseUrl = (baseUrl: string | undefined): string => {
+  const fromEnv = process.env["VIDEOGEN_BASE_URL"];
+  const raw = baseUrl ?? fromEnv ?? DEFAULT_API_BASE_URL;
+  return mapAppHostToApiBaseUrl(raw);
+};
+
 /**
  * Credential store directory. Override with `VIDEOGEN_CLI_CONFIG_DIR` for tests
  * or to isolate sessions (runtime, not build-time).
@@ -31,12 +65,6 @@ export const getCredentialsDir = (): string => {
     return override;
   }
   return join(homedir(), ".videogen", "cli");
-};
-
-export const resolveApiBaseUrl = (baseUrl: string | undefined): string => {
-  const fromEnv = process.env["VIDEOGEN_BASE_URL"];
-  const raw = baseUrl ?? fromEnv ?? DEFAULT_API_BASE_URL;
-  return trimTrailingSlash(raw);
 };
 
 /**

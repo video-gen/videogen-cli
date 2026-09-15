@@ -84,9 +84,10 @@ videogen workflows script-to-video --wait --body '{
   "script": "Stay hydrated for better focus and energy.",
   "visualStyle": {
     "type": "AI_IMAGE",
-    "aiStyle": "loose watercolor illustration with visible brushstrokes"
+    "aiStyle": "Loose watercolor illustration, visible brushstrokes, soft color bleeds, paper texture, muted palette. A clear uncluttered subject centered in the frame, occupying only the middle half of the image, with generous empty margins on all four sides, no background clutter."
   },
   "quality": "HIGH",
+  "autoExport": true,
   "remixActions": [
     { "type": "ENABLE_CAPTIONS" },
     {
@@ -96,7 +97,7 @@ videogen workflows script-to-video --wait --body '{
       "quality": "HIGH"
     }
   ]
-}'
+}' | jq -r '.downloadUrl'
 ```
 
 Example response (after `--wait`):
