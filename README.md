@@ -77,7 +77,14 @@ videogen tools --help
 
 ## Workflows
 
-Start a script-to-video run and wait until it finishes (`--wait` polls for you):
+Start a script-to-video run and wait for its outcome (`--wait` polls for you):
+
+For workflows and tools that apply results to a project, `--wait` also returns
+when the status is `awaiting_approval`. This means the result is retained but
+needs your approval in VideoGen before it changes the project. The command
+prints that status unchanged and exits normally; it does not claim the result
+was applied. Inspect the returned `status` before treating it as `succeeded`.
+Failed and cancelled operations still exit with an error.
 
 ```bash
 videogen workflows script-to-video --wait --body '{
@@ -121,7 +128,7 @@ Without `--wait`, the command returns immediately with `workflowRunId` / `projec
 videogen workflows get-workflow-run --workflow-run-id vg_work_...
 ```
 
-Other workflow starters: `voiceover-to-video`, `slideshow-to-video`, `prompt-to-video-clip`.
+Other workflow starters: `voiceover-to-video`, `slideshow-to-video`, `prompt-to-video-clip`, `video-to-video` (restyles an uploaded `videoFileId` or a public `videoUrl` from a `prompt`).
 
 ## Tools
 
@@ -279,7 +286,7 @@ videogen webhooks delete-webhook-endpoint --webhook-endpoint-id ep_...
 | `--api-key <key>` | API key (or `VIDEOGEN_API_KEY`) |
 | `--base-url <url>` | Override API base URL |
 | `--body '<json>'` | JSON request body (`--body @file.json`, or pipe JSON on stdin) |
-| `--wait` | Poll until complete (tools, workflows, export, remix, assistant) |
+| `--wait` | Poll until complete, or until a workflow/tool needs approval |
 | `--json` / `--no-json` | Force JSON stdout (on by default). **Not** a body flag. |
 | Path/query params | Kebab flags, e.g. `--project-id`, `--workflow-run-id`, `--file-id`, `--limit`, `--self-only` |
 

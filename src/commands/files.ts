@@ -64,6 +64,26 @@ export const filesCommands: ResourceCommands = {
     printJson(await client.files.createFileUpload(request));
   },
 
+  // @sdk-operation createFileUrlImport
+  "create-file-url-import": async ({ client, args, wait }) => {
+    // We intentionally use an unsafe `as` assertion here because the API server validates the body and returns a type error if invalid.
+    const request = (await resolveRequest({
+      flags: args.flags,
+      requireBody: true,
+    })) as Parameters<typeof client.files.createFileUrlImport>[0];
+    printJson(
+      wait
+        ? await client.files.createFileUrlImportAndWait(request)
+        : await client.files.createFileUrlImport(request),
+    );
+  },
+
+  // @sdk-operation getFileUrlImport
+  "get-file-url-import": async ({ client, args }) => {
+    const fileImportId = requireStringFlag(args.flags, "fileImportId");
+    printJson(await client.files.getFileUrlImport({ fileImportId }));
+  },
+
   upload: async ({ client, args }) => {
     const path = args.positionals[0];
     if (path == null || path.length === 0) {

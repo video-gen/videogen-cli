@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { text } from "node:stream/consumers";
 import { getStringFlag } from "./args";
 
 const dropUndefined = (obj: Record<string, unknown>): Record<string, unknown> => {
@@ -24,13 +25,7 @@ const parseJsonObject = (raw: string, label: string): Record<string, unknown> =>
   return result;
 };
 
-const readStdin = async (): Promise<string> => {
-  const chunks: Buffer[] = [];
-  for await (const chunk of process.stdin) {
-    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
-  }
-  return Buffer.concat(chunks).toString("utf8");
-};
+const readStdin = (): Promise<string> => text(process.stdin);
 
 /**
  * Resolves a JSON request body from `--body`, `--body @path`, or stdin.

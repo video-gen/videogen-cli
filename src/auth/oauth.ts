@@ -182,7 +182,7 @@ const postForm = async ({
   return {
     access_token: accessToken,
     refresh_token: refreshToken,
-    expires_in: expiresIn,
+    ...(expiresIn == null ? {} : { expires_in: expiresIn }),
   };
 };
 
@@ -381,18 +381,29 @@ export const startLoopbackListener = ({
     });
   });
 
+/**
+ * The authorization URL is built from server-advertised metadata, so it is
+ * untrusted. Only http(s) URLs are opened, and never through a shell: `cmd.exe`
+ * treats `&`, `|` and `^` in the URL as command syntax.
+ */
 export const openInBrowser = async (url: string): Promise<void> => {
+  const parsedUrl = URL.canParse(url) ? new URL(url) : null;
+  if (parsedUrl == null || (parsedUrl.protocol !== "https:" && parsedUrl.protocol !== "http:")) {
+    throw new Error(`Refusing to open a non-http(s) sign-in URL. Open this URL manually:\n${url}`);
+  }
+
+  const safeUrl = parsedUrl.toString();
   const platform = process.platform;
   try {
     if (platform === "darwin") {
-      await execFileAsync("open", [url]);
+      await execFileAsync("open", [safeUrl]);
       return;
     }
     if (platform === "win32") {
-      await execFileAsync("cmd", ["/c", "start", "", url]);
+      await execFileAsync("rundll32.exe", ["url.dll,FileProtocolHandler", safeUrl]);
       return;
     }
-    await execFileAsync("xdg-open", [url]);
+    await execFileAsync("xdg-open", [safeUrl]);
   } catch {
     throw new Error(`Could not open a browser automatically. Open this URL manually:\n${url}`);
   }

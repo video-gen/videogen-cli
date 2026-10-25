@@ -20,19 +20,20 @@ export const runAuthLogin = async ({ args }: { args: ParsedArgs }): Promise<void
   });
 };
 
-export const runAuthLogout = async ({ args }: { args: ParsedArgs }): Promise<void> => {
-  const apiBaseUrl = resolveApiBaseUrl(args.globals.baseUrl);
-  const cleared = clearStoredCredentials({ apiBaseUrl });
+export const runAuthLogout = ({ args }: { args: ParsedArgs }): Promise<void> =>
+  Promise.resolve().then(() => {
+    const apiBaseUrl = resolveApiBaseUrl(args.globals.baseUrl);
+    const cleared = clearStoredCredentials({ apiBaseUrl });
 
-  printJson({
-    ok: true,
-    apiBaseUrl,
-    cleared,
-    message: cleared
-      ? "Signed out. Cached OAuth credentials removed."
-      : "No cached OAuth credentials to remove.",
+    printJson({
+      ok: true,
+      apiBaseUrl,
+      cleared,
+      message: cleared
+        ? "Signed out. Cached OAuth credentials removed."
+        : "No cached OAuth credentials to remove.",
+    });
   });
-};
 
 /**
  * Registered for help / surface discovery. Prefer `runAuthLogin` / `runAuthLogout`

@@ -12,12 +12,15 @@ export const entitiesCommands: ResourceCommands = {
       entityTypeFlag === "ACTOR" ||
       entityTypeFlag === "PRODUCT" ||
       entityTypeFlag === "VISUAL_STYLE" ||
-      entityTypeFlag === "SLIDESHOW_THEME"
+      entityTypeFlag === "SLIDESHOW_THEME" ||
+      entityTypeFlag === "BRAND" ||
+      entityTypeFlag === "LOCATION" ||
+      entityTypeFlag === "PROP"
         ? entityTypeFlag
         : undefined;
     if (entityTypeFlag != null && entityType == null) {
       throw new Error(
-        `Invalid --entity-type "${entityTypeFlag}". Expected ACTOR, PRODUCT, VISUAL_STYLE, or SLIDESHOW_THEME.`,
+        `Invalid --entity-type "${entityTypeFlag}". Expected ACTOR, PRODUCT, VISUAL_STYLE, SLIDESHOW_THEME, BRAND, LOCATION, or PROP.`,
       );
     }
     printJson(

@@ -1,4 +1,3 @@
-import { getBooleanFlag } from "../args";
 import { resolveRequest } from "../body";
 import { printJson } from "../output";
 import { paginationFlags, requireStringFlag, selfOnlyFlag } from "./flags";
@@ -7,12 +6,10 @@ import type { ResourceCommands } from "./types";
 export const projectsCommands: ResourceCommands = {
   // @sdk-operation listProjects
   "list-projects": async ({ client, args }) => {
-    const includeUiProjects = getBooleanFlag(args.flags, "includeUiProjects");
     printJson(
       await client.projects.listProjects({
         ...paginationFlags(args.flags),
         ...selfOnlyFlag(args.flags),
-        ...(includeUiProjects != null ? { includeUiProjects } : {}),
       }),
     );
   },
