@@ -95,7 +95,7 @@ videogen workflows script-to-video --wait --body '{
   },
   "quality": "HIGH",
   "autoExport": true,
-  "remixActions": [
+  "videoEdits": [
     { "type": "ENABLE_CAPTIONS" },
     {
       "type": "CONVERT_IMAGES_TO_VIDEOS",
@@ -128,7 +128,7 @@ Without `--wait`, the command returns immediately with `workflowRunId` / `projec
 videogen workflows get-workflow-run --workflow-run-id vg_work_...
 ```
 
-Other workflow starters: `voiceover-to-video`, `slideshow-to-video`, `prompt-to-video-clip`, `video-to-video` (restyles an uploaded `videoFileId` or a public `videoUrl` from a `prompt`).
+Other workflow starters: `voiceover-to-video`, `slideshow-to-video`, `prompt-to-video-clip`, `video-to-video` (restyles an uploaded `videoFileId` or a public `videoUrl` from a `prompt`), `translate-video` (translates an uploaded `videoFileId` into each of `outputLanguages`, one editable video per language; export a specific language with `export-project` and its `editableVideoId`).
 
 ## Tools
 
@@ -210,16 +210,22 @@ Export a finished workflow project:
 videogen projects export-project --project-id vg_proj_... --wait --body '{"quality":"HIGH"}'
 ```
 
-Apply remix actions:
+Apply video edits to a specific editable video:
 
 ```bash
-videogen projects remix-project --project-id vg_proj_... --wait --body '{
-  "remixActions": [
+videogen projects start-video-edits --project-id vg_proj_... --editable-video-id vg_art_... --wait --body '{
+  "videoEdits": [
     { "type": "ENABLE_CAPTIONS" },
     { "type": "ADD_TRANSITIONS" }
   ]
 }'
+
+videogen projects list-video-edits --project-id vg_proj_... --editable-video-id vg_art_...
 ```
+
+`start-video-edits` returns the created `videoEditIds`; `--wait` polls only those
+edits until they complete. `list-video-edits` returns paginated edit history and
+can be filtered by `editableVideoId`.
 
 ## Assistant
 
@@ -279,22 +285,65 @@ videogen webhooks list-webhook-endpoints
 videogen webhooks delete-webhook-endpoint --webhook-endpoint-id ep_...
 ```
 
+## Billing
+
+Billing access must first be granted for this credential in VideoGen. Check the
+account and prepare a one-time credit quote using a client-generated UUID:
+
+```bash
+videogen billing get-billing-account
+videogen billing create-billing-order --body '{
+  "orderId": "3ad99513-4692-48fd-9429-578d36e601be",
+  "credits": 2000
+}'
+```
+
+Show the returned team, credits, currency, subtotal, discount, tax, fees, total,
+expiry and refund terms to the user. Only complete after they approve those exact
+terms. Supply the scoped payment credential through `VIDEOGEN_PAYMENT_TOKEN`
+using your secure environment or secret manager. Never include its value in a
+command, JSON body, prompt or log. Use the revision returned by the quote in the
+completion request.
+
+```bash
+videogen billing complete-billing-order \
+  --order-id 3ad99513-4692-48fd-9429-578d36e601be \
+  --body '{"revision":0,"idempotencyKey":"purchase-approved-0001"}'
+```
+
+Completion sends the credential only in the secure payment header. It makes one
+request and never automatically retries a charge or polls. Inspect the returned
+state: payment and credit fulfillment are separate. After an uncertain response,
+read the original order before retrying; an identical retry must reuse the same
+order, revision, idempotency key and payment credential.
+
+```bash
+videogen billing get-billing-order --order-id 3ad99513-4692-48fd-9429-578d36e601be
+videogen billing cancel-billing-order --order-id 3ad99513-4692-48fd-9429-578d36e601be
+videogen billing request-billing-refund \
+  --order-id 3ad99513-4692-48fd-9429-578d36e601be \
+  --body '{"reason":"Purchased the wrong credit quantity."}'
+```
+
+Cancellation only voids an unpaid purchase. A refund request is reviewed by
+support; it does not mean a refund has been approved or completed.
+
 ## Common flags
 
-| Flag | Description |
-| --- | --- |
-| `--api-key <key>` | API key (or `VIDEOGEN_API_KEY`) |
-| `--base-url <url>` | Override API base URL |
-| `--body '<json>'` | JSON request body (`--body @file.json`, or pipe JSON on stdin) |
-| `--wait` | Poll until complete, or until a workflow/tool needs approval |
-| `--json` / `--no-json` | Force JSON stdout (on by default). **Not** a body flag. |
-| Path/query params | Kebab flags, e.g. `--project-id`, `--workflow-run-id`, `--file-id`, `--limit`, `--self-only` |
+| Flag                   | Description                                                                                  |
+| ---------------------- | -------------------------------------------------------------------------------------------- |
+| `--api-key <key>`      | API key (or `VIDEOGEN_API_KEY`)                                                              |
+| `--base-url <url>`     | Override API base URL                                                                        |
+| `--body '<json>'`      | JSON request body (`--body @file.json`, or pipe JSON on stdin)                               |
+| `--wait`               | Poll until complete, or until a workflow/tool needs approval                                 |
+| `--json` / `--no-json` | Force JSON stdout (on by default). **Not** a body flag.                                      |
+| Path/query params      | Kebab flags, e.g. `--project-id`, `--workflow-run-id`, `--file-id`, `--limit`, `--self-only` |
 
 Important: pass request JSON with `--body`. `--json` only controls stdout formatting — it is not a request-body flag.
 
 ## Resources
 
-`account` · `workflows` · `tools` · `files` · `projects` · `assistant` · `entities` · `text` · `resources` · `webhooks`
+`account` · `billing` · `workflows` · `tools` · `files` · `projects` · `assistant` · `entities` · `text` · `resources` · `webhooks`
 
 ## Develop
 
@@ -306,6 +355,14 @@ npm run typecheck
 ```
 
 `npm install` pulls `@videogen/sdk` from npm (or the local `file:../sdk-typescript` link in this monorepo).
+
+From the monorepo root, run the billing command and transport tests with:
+
+```bash
+node --import tsx --test cli/tests/billing.test.mjs
+```
+
+These tests mock HTTP transport and never make purchases.
 
 ## Docs
 

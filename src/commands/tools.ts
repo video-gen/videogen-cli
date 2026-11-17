@@ -129,6 +129,15 @@ export const toolsCommands: ResourceCommands = {
       andWait: (request) => ctx.client.tools.upscaleVideoAndWait(request),
     }),
 
+  // @sdk-operation dubVideo
+  "dub-video": async (ctx) =>
+    runTool<Parameters<typeof ctx.client.tools.dubVideo>[0]>({
+      args: ctx.args,
+      wait: ctx.wait,
+      start: (request) => ctx.client.tools.dubVideo(request),
+      andWait: (request) => ctx.client.tools.dubVideoAndWait(request),
+    }),
+
   // @sdk-operation image3dEffect
   "image-3d-effect": async (ctx) =>
     runTool<Parameters<typeof ctx.client.tools.image3dEffect>[0]>({

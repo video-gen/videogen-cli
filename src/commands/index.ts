@@ -1,9 +1,11 @@
 import { accountCommands } from "./account";
 import { assistantCommands } from "./assistant";
 import { authCommands } from "./auth";
+import { modelsCommands } from "./models";
+import { billingCommands } from "./billing";
 import { entitiesCommands } from "./entities";
 import { filesCommands } from "./files";
-import { projectsCommands } from "./projects";
+import { legacyProjectsCommands, projectsCommands } from "./projects";
 import { resourcesCommands } from "./resources";
 import { textCommands } from "./text";
 import { toolsCommands } from "./tools";
@@ -11,10 +13,12 @@ import type { ResourceCommands } from "./types";
 import { webhooksCommands } from "./webhooks";
 import { workflowsCommands } from "./workflows";
 
-export const RESOURCES: Record<string, ResourceCommands> = {
+const visibleResources: Record<string, ResourceCommands> = {
   account: accountCommands,
   assistant: assistantCommands,
   auth: authCommands,
+  billing: billingCommands,
+  models: modelsCommands,
   entities: entitiesCommands,
   files: filesCommands,
   projects: projectsCommands,
@@ -23,6 +27,11 @@ export const RESOURCES: Record<string, ResourceCommands> = {
   tools: toolsCommands,
   webhooks: webhooksCommands,
   workflows: workflowsCommands,
+};
+
+export const RESOURCES: Record<string, ResourceCommands> = {
+  ...visibleResources,
+  projects: { ...projectsCommands, ...legacyProjectsCommands },
 };
 
 export const listUsage = (): string => {
@@ -41,13 +50,13 @@ export const listUsage = (): string => {
     "",
     "Common flags:",
     "  --body '<json>'       JSON request body (or @file, or stdin)",
-    "  --wait                Poll until complete (tools/workflows/export/remix)",
+    "  --wait                Poll until complete (tools/workflows/exports/video edits)",
     "",
     "Resources:",
   ];
 
-  for (const resource of Object.keys(RESOURCES).sort()) {
-    const commands = RESOURCES[resource];
+  for (const resource of Object.keys(visibleResources).sort()) {
+    const commands = visibleResources[resource];
     if (commands == null) {
       continue;
     }

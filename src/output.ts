@@ -10,6 +10,7 @@ export const printError = (err: unknown): void => {
       error: err.message,
       status: err.status,
       requestId: err.requestId,
+      retryAfter: err.retryAfter,
       body: err.body,
     };
     process.stderr.write(`${JSON.stringify(payload, null, 2)}\n`);
